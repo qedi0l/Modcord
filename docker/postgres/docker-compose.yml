@@ -1,0 +1,81 @@
+---
+version: "3.8"
+services:
+  #postgres db
+  db:
+    image: postgres
+    container_name: postgres_container
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=postgres 
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pg16
+    networks:
+      - backbone
+    ports:
+      - 5432:5432/tcp
+
+  #postgres ui
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pg_admin
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=YES
+    networks:
+      - backbone
+    ports:
+      - 5050:80/tcp
+
+  #redis
+  #redis:
+  #  image: redis
+  #  container_name: redis
+  #  restart: unless-stopped
+  #  environment:
+      #- REDIS_PASSWORD=qed7691
+  #    - REDIS_PORT=6379
+  #    - REDIS_DATABASES=4
+  #  networks:
+  #    - backbone
+  #  ports:
+  #    - 6379:6379/tcp
+    #command: --requirepass "${REDIS_PASSWORD}"
+  #  volumes:
+  #    - ./data/redis:/data
+
+  redis-stack:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
+    restart: unless-stopped
+    environment:
+      #- REDIS_PASSWORD=
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=1
+    networks:
+      - backbone
+    ports:
+      - 6379:6379/tcp
+      - 8001:8001/tcp
+    #command: --requirepass "qed7691"
+    volumes:
+      - ./data/redis:/data
+
+  #elastic search Not implemented yet
+  
+  #elastic:
+  #  image: elasticsearch:8.12.1
+  #  container_name: elastic
+  #  restart: unless-stopped
+  #  ports:
+  #    - 9200:9200
+  #    - 9300:9300
+  #  environment:
+  #    - discovery.type=single-node
+  #    - xpack.security.enabled=false
+
+
+networks:
+  backbone:
+    driver: bridge
