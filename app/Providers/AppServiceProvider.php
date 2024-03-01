@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        RateLimiter::for('downloadLimiter', function(Request $request){
+            return Limit::perMinute(1)->response(function(){
+                return new Response('UwU you do not need this...');
+            });
+        });
     }
 }
