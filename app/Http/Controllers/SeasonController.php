@@ -12,7 +12,6 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
 
-
 class SeasonController extends Controller
 {
     use Upload;
@@ -90,10 +89,6 @@ class SeasonController extends Controller
     
     public function download(Request $request) 
     {
-        /* 
-            TODO: implement RateLimiter
-            #RateLimiter::throttle('ip', $minutes = 1, $maxHits = 20);
-        */
         
         $pack = Cache::remember('pack:'.$request->id, now()->addMinutes(5), function ($request) {
             $card = DB::table('cards')->where('id', '=', $request->id)->select('pack')->get()[0];
@@ -139,7 +134,7 @@ class SeasonController extends Controller
 
             TODO: fix this shitcode
         */
-        
+
         Cache::forget('seasons');
 
         $card_this = Card::find($request->id);
