@@ -60,7 +60,7 @@ class SeasonController extends Controller
     {   
         
         $seasons = Cache::remember('seasons', now()->addMinutes(5), function () {
-            return json_encode(DB::table('cards')->select('*')->get());
+            return json_encode(Card::all());
         });
         
         return view('profile.admin', [
@@ -72,15 +72,15 @@ class SeasonController extends Controller
     public function delete(Request $request)
     {
 
-        $card = DB::table('cards')->where('id', '=', $request->id)->select('*') -> get()[0];
+        $card = Card::find($request->id)[0];
         
         $this->deleteFile($card->pack);
         $this->deleteFile($card->img);
  
-        DB::table('cards')->where('id', '=', $request->id)->select('*') -> delete();
+        Card::find($request->id)->delete();
         
         Cache::remember('seasons', now()->addMinutes(5), function () {
-            $seasons = DB::table('cards')->select('*')->get();
+            $seasons = Card::all();
             return json_encode($seasons);
         });
 
@@ -91,7 +91,7 @@ class SeasonController extends Controller
     {
         
         $pack = Cache::remember('pack:'.$request->id, now()->addMinutes(5), function ($request) {
-            $card = DB::table('cards')->where('id', '=', $request->id)->select('pack')->get()[0];
+            $card = Card::find($request->id);
             return $card->pack;
         });
 
@@ -118,7 +118,7 @@ class SeasonController extends Controller
         Cache::forget('seasons');
 
         Cache::remember('seasons', now()->addMinutes(5), function () {
-            $seasons = DB::table('cards')->select('*')->get();
+            $seasons = Card::all();
             return json_encode($seasons);
         });
 
@@ -130,9 +130,8 @@ class SeasonController extends Controller
         /* 
             This moves season cards, moving their ids
 
-            NOT WORK PROPERLY ON POSTGRES
+            TODO: Code smells
 
-            TODO: fix this shitcode
         */
 
         Cache::forget('seasons');
@@ -158,7 +157,7 @@ class SeasonController extends Controller
         }
 
         Cache::remember('seasons', now()->addMinutes(5), function () {
-            $seasons = DB::table('cards')->select('*')->get();
+            $seasons = Card::query()->select('*')->orderBy('id','asc')->get();
             return json_encode($seasons);
         });
        
@@ -170,9 +169,8 @@ class SeasonController extends Controller
         /* 
             This moves season cards, moving their ids
 
-            NOT WORK PROPERLY ON POSTGRES
+            TODO: Code smells
 
-            TODO: fix this shitcode
         */
 
 
@@ -197,7 +195,7 @@ class SeasonController extends Controller
             $card_next->save();
         }
         Cache::remember('seasons', now()->addMinutes(5), function () {
-            $seasons = DB::table('cards')->select('*')->get();
+            $seasons = Card::query()->select('*')->orderBy('id','asc')->get();
             return json_encode($seasons);
         });
 
@@ -208,10 +206,10 @@ class SeasonController extends Controller
     public function homeIndex()
     {
         $seasons = Cache::remember('seasons', now()->addMinutes(5), function () {
-            return json_encode(DB::table('cards')->select('*')->get());
+            return json_encode(Card::all());
         });
         
-        return view('main',['seasons' => json_decode($seasons)]) ->with('success');
+        return view('main',['seasons' => json_decode($seasons)]) -> with('success');
     }
     
 }
