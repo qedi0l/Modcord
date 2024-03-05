@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('profile.admin')" :active="request()->routeIs('profile')">
-                        {{ __('profile.admin') }}
+                        {{ __('Admin Panel') }}
                     </x-nav-link>
                 </div>
             </div>
