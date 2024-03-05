@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SeasonController::class, 'homeIndex']);
 
-Route::get('/download', [SeasonController::class, 'download'])->name('season.download')->middleware(['throttle:downloadLimiter']);
+Route::get('/download', [SeasonController::class, 'download'])->name('season.download')->middleware(['downloadLimiter']);
 Route::get('/announcements', [SeasonController::class, 'announcements'])->name('season.announcement');
 
 
