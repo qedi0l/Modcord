@@ -47,8 +47,6 @@ class SeasonController extends Controller implements InterfaceCache
             $card->pack = "anons";
         }
 
-        
-
         /*
             TODO make formatting saving
             TODO implement side text editor
@@ -77,12 +75,13 @@ class SeasonController extends Controller implements InterfaceCache
     public function delete(Request $request) : View
     {
 
-        $card = Card::find($request->id)[0];
+        $card = Card::find($request->id);
         
         $this->deleteFile($card->pack);
         $this->deleteFile($card->img);
  
         Card::find($request->id)->delete();
+        File::query()->select('*')->where('pack',$card->pack)->delete();
         
         $this->updateCache();
 
@@ -236,14 +235,15 @@ class SeasonController extends Controller implements InterfaceCache
 
     public function updateCache($key = 'seasons', $value = null)
     {
+
+        $this->forgetCacheKey($key);
+
         if (!isset($value)){
             $value = Card::query()
                         ->select('*')
                         ->orderBy('id','asc')
                         ->get();
         }
-
-        $this->forgetCacheKey($key);
 
         Cache::put($key, json_encode($value), now()->addMinutes(5));
 
