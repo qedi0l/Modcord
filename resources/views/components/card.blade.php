@@ -6,7 +6,7 @@
     </div>
 
     <div class="z-2">
-        <img src="{{url('storage/'.$card->img)}}" class="rounded-xl fit-cover max-height-40">
+        <img src="{{url('storage/'.$card->img)}}" alt="{{$card->season}}" class="rounded-xl fit-cover max-height-40">
     </div>
 
     <div class="a-pos full-percent jc-sb c-w z-3 bt-0 card-foo flex">
