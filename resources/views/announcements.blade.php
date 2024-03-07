@@ -8,15 +8,16 @@
         @include('layouts.navbar')
 
         <div class="relative flex items-top justify-center min-h-screen background-color-12 dark:bg-gray-900 sm:items-center py-4 sm:pt-0 ">
-            <section class="secс"></section>
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 top-20">
-
+                
+                
                 <div class="r-pos">
                     <div class="max-w-6xl">
-                        <h1 class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{__('Seasons')}}</h1>
+                        <h1 class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{__('Announcements')}}</h1>
                     </div>
-                    <h1 class="r-pos shadow-outline p-4 sm:p-8 bg-transparent back-drop-blur-lg back-drop-blur bg-dark color-white sm:rounded-lg font-big">{{__('Seasons')}}</h1>
+                    <h1 class="r-pos shadow-outline p-4 sm:p-8 bg-transparent back-drop-blur-lg back-drop-blur bg-dark color-white sm:rounded-lg font-big">{{__('Announcements')}}</h1>
                 </div>
+                
 
                 @include('components.cards')
 
