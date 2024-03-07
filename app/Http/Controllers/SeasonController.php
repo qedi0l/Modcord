@@ -254,7 +254,10 @@ class SeasonController extends Controller implements InterfaceCache
     public function rememberCache($key = 'seasons', $value = null)
     {
         $seasons = Cache::remember($key, Carbon::now()->addMinutes(5), function () {
-            return Card::all();
+            return Card::query()
+            ->select('*')
+            ->orderBy('id','asc')
+            ->get();
         });
         return json_decode($seasons);
     }
