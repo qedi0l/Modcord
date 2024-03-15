@@ -17,3 +17,5 @@ yarn-error.log
 /.vscode
 .editorconfig
 .env.example
+docker/postgres/data/redis/dump.rdb
+
