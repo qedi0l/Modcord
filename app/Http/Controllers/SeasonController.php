@@ -92,8 +92,7 @@ class SeasonController extends Controller implements InterfaceCache
     {
         $card = Card::find($request->id);
 
-        $pack = $this->getCache('pack:'.$request->id);
-        if (isset($pack)) $pack = $this->setCache('pack:'.$request->id,$pack);
+        $pack = $this->rememberCache('pack:'.$request->id,$card->pack);
 
         return url('storage/'.$pack);
     }
@@ -220,7 +219,7 @@ class SeasonController extends Controller implements InterfaceCache
                             ->orderBy('id','asc')
                             ->get();
                             
-        $this->setCache('announcements',$announcements);
+        $this->rememberCache('announcements',$announcements);
         
         return view('announcements',['seasons' => $announcements]) -> with('success');
 
@@ -238,37 +237,25 @@ class SeasonController extends Controller implements InterfaceCache
 
         $this->forgetCacheKey($key);
 
-        if (!isset($value)){
-            $value = Card::query()
-                        ->select('*')
-                        ->orderBy('id','asc')
-                        ->get();
-        }
-
-        Cache::put($key, json_encode($value), now()->addMinutes(5));
+        if (isset($value)) $this->rememberCache($key,$value);
 
     }
-
-    public function setForeverCache($key, $value){}
 
     public function rememberCache($key = 'seasons', $value = null)
     {
-        $seasons = Cache::remember($key, Carbon::now()->addMinutes(5), function () {
-            return Card::query()
-            ->select('*')
-            ->orderBy('id','asc')
-            ->get();
+        $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
+            if (isset($value)) return json_encode($value);
+            else return Card::query()
+                            ->select('*')
+                            ->orderBy('id','asc')
+                            ->get();
         });
-        return json_decode($seasons);
+        return json_decode($data);
     }
 
-    public function setCache($key, $value)
-    {
 
-        if(Cache::has($key)) return $this->getCache($key);
-        else Cache::set($key, $value, 3600);
-
-    }
+    public function setCache($key, $value){}
+    public function setForeverCache($key, $value){}
 
     public function forgetCacheKey($key)
     {
