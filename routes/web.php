@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\SeasonController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,8 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SeasonController::class, 'homeIndex'])->name('/');
 
 Route::get('/download', [SeasonController::class, 'download'])->name('season.download')->middleware(['downloadLimiter']);
-Route::get('/announcements', [SeasonController::class, 'announcements'])->name('season.announcement');
+Route::get('/announcements', [AnnouncementsController::class, 'index'])->name('announcements.index');
 
+Route::get('/request', [RequestsController::class, 'index'])->name('requests');
+Route::get('/request/new', [RequestsController::class, 'create'])->name('requests.create');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
