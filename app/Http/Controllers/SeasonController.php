@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use App\Traits\Upload;
 use App\Models\Card;
+use App\Models\UserRequest;
 use App\Interfaces\InterfaceCache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -209,20 +210,6 @@ class SeasonController extends Controller implements InterfaceCache
         $seasons = $this->rememberCache();
         
         return view('main',['seasons' => $seasons]) -> with('success');
-    }
-
-    public function announcements(): View
-    {
-        $announcements = Card::query()
-                            ->select('*')
-                            ->where('pack','anons')
-                            ->orderBy('id','asc')
-                            ->get();
-                            
-        $this->rememberCache('announcements',$announcements);
-        
-        return view('announcements',['seasons' => $announcements]) -> with('success');
-
     }
 
     public function getCache($key)
