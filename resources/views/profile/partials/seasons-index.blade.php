@@ -25,7 +25,7 @@
                 <div class="mg-right-30">
                     @if ($card->pack == "anons")
                         <x-primary-button>
-                            <a href="{{route('season.announcement')}}">{{ __('announcement') }}</a>
+                            <a href="{{route('announcements.index')}}">{{ __('announcement') }}</a>
                         </x-primary-button>
                     @else
                         <x-primary-button>
