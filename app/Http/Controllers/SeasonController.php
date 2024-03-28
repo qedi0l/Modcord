@@ -62,7 +62,7 @@ class SeasonController extends Controller implements InterfaceCache
     }
     
     
-    public function index() : View
+    public function seasonIndex() : View
     {   
         
         $seasons = $this->rememberCache();
@@ -70,6 +70,12 @@ class SeasonController extends Controller implements InterfaceCache
         return view('profile.admin', [
             'seasons' => $seasons,
         ]); 
+    }
+    public function homeIndex(): View
+    {
+        $seasons = $this->rememberCache();
+        
+        return view('main',['seasons' => $seasons]);
     }
 
 
@@ -203,13 +209,6 @@ class SeasonController extends Controller implements InterfaceCache
         $this->updateCache('seasons', $seasons);
 
         return redirect()->route('profile.admin')->with('success','Saved');
-    }
-
-    public function homeIndex(): View
-    {
-        $seasons = $this->rememberCache();
-        
-        return view('main',['seasons' => $seasons]) -> with('success');
     }
 
     public function getCache($key)
