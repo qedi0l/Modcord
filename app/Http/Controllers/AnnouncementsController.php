@@ -23,18 +23,19 @@ class announcementsController extends Controller implements InterfaceCache
         ->orderBy('id','asc')
         ->get();
         //$requests = UserRequest::find($request->id);
-        /*$requests = UserRequest::query()
+
+        $client_ip = $request->getClientIp();
+        $requests = UserRequest::query()
                         ->select('*')
-                        ->where('ip_address',$request->getClientIp())
+                        ->where('ip_address',$client_ip)
                         ->get();
-        //$client_ip = $request->getClientIp();
+        
         //$requests = $this->rememberCache('ip:'.$client_ip, $client_ip);
-        //var_dump($requests);*/
                 
         $this->rememberCache('announcements',$announcements);
         //$requests = [];
 
-        return view('announcements',['seasons' => $announcements]) -> with('success');
+        return view('announcements',['seasons' => $announcements, 'requests' => $requests]) -> with('success');
     }
    
     public function create()
