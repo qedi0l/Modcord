@@ -27,18 +27,8 @@
                                 <div class="title">
                                     <div class="r-pos">
                                         <div class="max-w-6xl">
-                                            @if ($request->state == "idle")
-                                                <h1 style="background-color: #777" class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
-                                            @endif
-                                            @if ($request->state == "aproved")
-                                                <h1 style="background-color: #00ff371c" class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
-                                            @endif
-                                            @if ($request->state == "pending")
-                                                <h1 style="background-color: #fbff001c" class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
-                                            @endif
-                                            @if ($request->state == "disaproved")
-                                                <h1 style="background-color: #ff2f001c" class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
-                                            @endif
+                                            <h1 class="{{'request-'.$request->state}} a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
+                                            
 
                                         </div>
                                         <h1 class="r-pos shadow-outline flex jc-sb p-4 sm:p-8 bg-transparent back-drop-blur-lg back-drop-blur bg-dark color-white sm:rounded-lg font-big">
@@ -50,6 +40,7 @@
                                                         <a href="{{route('requests.delete',$request->id)}}"> Delete</a>
                                                     </button> 
                                                 @endif
+                                                
                                                 
                                                 
                                             </div>
@@ -68,6 +59,12 @@
                         </section>
                     @endforeach
                 </div>
+
+                @if (session('status'))
+                    <h1 class="alert alert-danger font-big mt-3">
+                        {{ session('status') }}
+                    </h1>
+                @endif
                 
                 @include('components.request-form')
 
