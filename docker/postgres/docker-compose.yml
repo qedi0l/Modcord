@@ -7,7 +7,7 @@ services:
     container_name: postgres_container
     restart: unless-stopped
     environment:
-      - POSTGRES_PASSWORD=postgres 
+      - POSTGRES_PASSWORD=75?4jHur^gn8u4kt^
       - POSTGRES_USER=postgres
       - POSTGRES_DB=pg16
     networks:
@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=YES
+      - PGADMIN_DEFAULT_PASSWORD=75?4jHur^gn8u4kt^
     networks:
       - backbone
     ports:
@@ -34,9 +34,10 @@ services:
     container_name: redis-stack
     restart: unless-stopped
     environment:
-      #- REDIS_PASSWORD=
+      - REDIS_PASSWORD=75?4jHur^gn8u4kt^
       - REDIS_PORT=6379
       - REDIS_DATABASES=1
+      - REDIS_USERNAME=default
     networks:
       - backbone
     ports:

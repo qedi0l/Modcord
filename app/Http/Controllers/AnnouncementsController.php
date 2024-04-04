@@ -3,38 +3,51 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\File;
-use App\Traits\Upload;
+use App\Traits\CacheMethods;
 use App\Models\Card;
 use App\Models\UserRequest;
-use App\Interfaces\InterfaceCache;
 use Carbon\Carbon;
+use Illuminate\Cookie\CookieJar;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
-class announcementsController extends Controller implements InterfaceCache
+class announcementsController extends Controller
 {
+    use CacheMethods;
     public function index(Request $request): View
     {
-        $announcements = Card::query()
-        ->select('*')
-        ->where('pack','anons')
-        ->orderBy('id','asc')
-        ->get();
-        //$requests = UserRequest::find($request->id);
-        /*$requests = UserRequest::query()
-                        ->select('*')
-                        ->where('ip_address',$request->getClientIp())
-                        ->get();
-        //$client_ip = $request->getClientIp();
-        //$requests = $this->rememberCache('ip:'.$client_ip, $client_ip);
-        //var_dump($requests);*/
-                
-        $this->rememberCache('announcements',$announcements);
-        //$requests = [];
+        $announcements = $this->cacheRemember('announcements');
 
-        return view('announcements',['seasons' => $announcements]) -> with('success');
+        /*
+            Because of requests are without register
+            Store of requests are by IP
+            It takes remembered IP in cache and compare with cookie
+
+            TODO IP remember may not work
+        */
+
+        $client_ip = $request->getClientIp();
+        $cash_ip = $this->cacheGet('ip'.$client_ip);
+        $cookie_ip = $request->cookie('ip');
+
+        if((!empty($cash_ip) or !empty($cookie_ip)) and ($cash_ip == $cookie_ip))
+        {
+            $requests = UserRequest::query()
+                        ->select('*')
+                        ->where('ip_address',$cookie_ip)
+                        ->get();
+        }
+        else
+        {
+            $requests = UserRequest::query()
+                                    ->select('*')
+                                    ->where('ip_address',$client_ip)
+                                    ->get();
+           
+        }
+
+        return view('announcements',['seasons' => $announcements, 'requests' => $requests]) -> with('success');
     }
    
     public function create()
@@ -62,23 +75,7 @@ class announcementsController extends Controller implements InterfaceCache
         //
     }
 
-    public function getCache($key)
-    {
-        $data = Cache::get($key);
-        
-        return json_decode($data);
-    }
-
-    public function updateCache($key = 'announcements', $value = null)
-    {
-
-        $this->forgetCacheKey($key);
-
-        if (isset($value)) $this->rememberCache($key,$value);
-
-    }
-
-    public function rememberCache($key = 'announcements', $value = null)
+    public function cacheRemember(string $key, mixed $value = null, int $ttl = 3600): mixed 
     {
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
@@ -91,11 +88,5 @@ class announcementsController extends Controller implements InterfaceCache
         return json_decode($data);
     }
 
-    public function setCache($key, $value){}
-    public function setForeverCache($key, $value){}
-
-    public function forgetCacheKey($key)
-    {
-        Cache::forget($key);
-    }
+   
 }

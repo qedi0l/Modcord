@@ -11,15 +11,62 @@
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 top-20">
                 
                 
-                <div class="r-pos">
-                    <div class="max-w-6xl">
-                        <h1 class="a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{__('Announcements')}}</h1>
-                    </div>
-                    <h1 class="r-pos shadow-outline p-4 sm:p-8 bg-transparent back-drop-blur-lg back-drop-blur bg-dark color-white sm:rounded-lg font-big">{{__('Announcements')}}</h1>
-                </div>
+                @include('components.page-label', array($lable = "Announcements"))
                 
 
-                @include('components.cards')
+                @include('components.cards');
+
+                
+                @include('components.page-label', array($lable = "Requests"))
+
+                <div class="mt-3">
+                    @foreach ($requests as $request)
+                    <!-- include('components.page-label', array($lable = $request)) -->
+                        <section class=" mt-3">
+                            <div class="flex column status-idle">
+                                <div class="title">
+                                    <div class="r-pos">
+                                        <div class="max-w-6xl">
+                                            <h1 class="{{'request-'.$request->state}} a-pos p-4 sm:p-8 bg-21 color-white width-100 sm:rounded-lg font-big">{{$request->season}}</h1>
+                                            
+
+                                        </div>
+                                        <h1 class="r-pos shadow-outline flex jc-sb p-4 sm:p-8 bg-transparent back-drop-blur-lg back-drop-blur bg-dark color-white sm:rounded-lg font-big">
+                                            {{$request->season}}
+                                            <div class="">
+                                                {{$request->state}}
+                                                @if ($request->state == "idle")
+                                                    <button type="button" class="btn btn-danger">
+                                                        <a href="{{route('requests.delete',$request->id)}}"> Delete</a>
+                                                    </button> 
+                                                @endif
+                                                
+                                                
+                                                
+                                            </div>
+
+                                            
+                                        </h1>
+                                        
+                                    </div>
+                                </div>
+                                <div class="text">
+
+                                </div>
+                            </div>
+                            
+                            
+                        </section>
+                    @endforeach
+                </div>
+
+                @if (session('status'))
+                    <h1 class="alert alert-danger font-big mt-3">
+                        {{ session('status') }}
+                    </h1>
+                @endif
+                
+                @include('components.request-form')
 
                 <div class="flex z-2 justify-center mt-4 sm:items-center sm:justify-between">
                     <div class="text-center z-2 text-sm text-gray-500 sm:text-left">
@@ -42,7 +89,7 @@
                         </div>
                     </div>
 
-                    <div class="ml-4 z-2 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
+                    <div class="ml-4 z-2 text-center text-sm text-gray-500 sm:text-right sm:ml-0 mt-10">
                         <div class="flex items-center  justify-center pt-8 margin-t-10-b-10 sm:justify-start sm:pt-0">
                             <p class="margin-right-10">Powered by </p>
                             <img width="225px" src="{{url('storage/cooltext322172763568995.png')}}">

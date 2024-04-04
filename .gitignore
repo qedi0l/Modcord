@@ -20,3 +20,5 @@ yarn-error.log
 docker/postgres/data/redis/dump.rdb
 
 *.rdb
+.env
+docker/postgres/docker-compose.yml

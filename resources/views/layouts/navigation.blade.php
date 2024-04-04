@@ -11,9 +11,12 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('profile.admin')" :active="request()->routeIs('profile')">
+                <div class="hidden space-x-4 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('profile.admin')" :active="request()->routeIs('admin')">
                         {{ __('Admin Panel') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('profile.requests')" :active="request()->routeIs('requests')">
+                        {{ __('Requests Panel') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -36,6 +39,10 @@
                     <x-slot name="content">
                         <x-dropdown-link :href="'/'">
                             {{ __('Home') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('announcements.index')">
+                            {{ __('Announcements') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
