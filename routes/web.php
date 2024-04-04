@@ -39,10 +39,13 @@ Route::middleware('auth')->group(function ()
     Route::post('/profile/admin/new', [SeasonController::class, 'create'])->name('profile.admin.new');
     Route::get('/profile/admin/delete', [SeasonController::class, 'delete'])->name('season.delete');
     Route::post('/profile/admin/update', [SeasonController::class, 'update'])->name('profile.admin.update');
+
     Route::get('/profile/admin', [SeasonController::class, 'index'])->name('profile.admin');
     Route::get('/profile/admin/up', [SeasonController::class, 'MoveUp'])->name('profile.admin.up');
     Route::get('/profile/admin/down', [SeasonController::class, 'MoveDown'])->name('profile.admin.down');
 
+    Route::get('/profile/requests', [RequestsController::class, 'show'])->name('profile.requests');
+    Route::post('/profile/requests/update', [RequestsController::class, 'update'])->name('profile.requests.update');
 });
 
 require __DIR__.'/auth.php';

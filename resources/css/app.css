@@ -376,5 +376,15 @@ body{
     background-color:#ff2f001c !important;
 }
 .request-idle{
-    background-color: #777 !important;
+    background-color: #616161 !important;
+}
+.collapse{
+    visibility: visible !important;
+}
+
+.accordion-button:focus{
+    box-shadow: none !important;
+}
+.accordion-button:not(.collapsed){
+    color:white;
 }
