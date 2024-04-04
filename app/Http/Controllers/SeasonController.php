@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Traits\Upload;
 use App\Models\Card;
 use App\Models\UserRequest;
+use App\Traits\CacheMethods;
 use App\Interfaces\InterfaceCache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,9 +15,9 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
 
-class SeasonController extends Controller implements InterfaceCache
+class SeasonController extends Controller 
 {
-    use Upload;
+    use Upload, CacheMethods;
 
     private function storeFile($file,$folder = null)
     {
@@ -56,7 +57,7 @@ class SeasonController extends Controller implements InterfaceCache
         
         $card->save();
 
-        $this->updateCache();
+        $this->cacheUpdate('seasons',Card::all());
 
         return redirect('profile/admin');
     }
@@ -65,7 +66,7 @@ class SeasonController extends Controller implements InterfaceCache
     public function seasonIndex() : View
     {   
         
-        $seasons = $this->rememberCache();
+        $seasons = $this->cacheRemember();
         
         return view('profile.admin', [
             'seasons' => $seasons,
@@ -83,14 +84,20 @@ class SeasonController extends Controller implements InterfaceCache
     {
 
         $card = Card::find($request->id);
-        
-        $this->deleteFile($card->pack);
-        $this->deleteFile($card->img);
+        /*
+            announcements are without pack file, but db record is 'anons'
+        */
+        if (isset($card->pack))
+        {
+            $this->deleteFile($card->pack);
+            $this->deleteFile($card->img);
+        }
+       
  
         Card::find($request->id)->delete();
         File::query()->select('*')->where('pack',$card->pack)->delete();
         
-        $this->updateCache();
+        $this->cacheUpdate('seasons',Card::all());
 
         return view('profile.admin');
     }
@@ -99,7 +106,7 @@ class SeasonController extends Controller implements InterfaceCache
     {
         $card = Card::find($request->id);
 
-        $pack = $this->rememberCache('pack:'.$request->id,$card->pack);
+        $pack = $this->cacheRemember('pack:'.$request->id,$card->pack);
 
         return url('storage/'.$pack);
     }
@@ -129,7 +136,7 @@ class SeasonController extends Controller implements InterfaceCache
 
         $card->save();
 
-        $this->updateCache();
+        $this->cacheUpdate('seasons',Card::all());
 
         return redirect()->route('profile.admin')->with('success','Saved');
     }
@@ -168,7 +175,7 @@ class SeasonController extends Controller implements InterfaceCache
                         ->orderBy('id','asc')
                         ->get();
 
-        $this->updateCache('seasons',$seasons);
+        $this->cacheUpdate('seasons',$seasons);
        
         return redirect()->route('profile.admin')->with('success','Saved');
     }
@@ -206,29 +213,22 @@ class SeasonController extends Controller implements InterfaceCache
                         ->orderBy('id','asc')
                         ->get();
 
-        $this->updateCache('seasons', $seasons);
+        $this->cacheUpdate('seasons', $seasons);
 
         return redirect()->route('profile.admin')->with('success','Saved');
     }
 
-    public function getCache($key)
+    public function homeIndex(): View
     {
-        $data = Cache::get($key);
+        $seasons = $this->cacheRemember();
         
-        return json_decode($data);
+        return view('main',['seasons' => $seasons]) -> with('success');
     }
 
-    public function updateCache($key = 'seasons', $value = null)
-    {
-
-        $this->forgetCacheKey($key);
-
-        if (isset($value)) $this->rememberCache($key,$value);
-
-    }
-
-    public function rememberCache($key = 'seasons', $value = null)
-    {
+    
+ 
+    public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
+    { 
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
             else return Card::query()
@@ -237,15 +237,6 @@ class SeasonController extends Controller implements InterfaceCache
                             ->get();
         });
         return json_decode($data);
-    }
-
-
-    public function setCache($key, $value){}
-    public function setForeverCache($key, $value){}
-
-    public function forgetCacheKey($key)
-    {
-        Cache::forget($key);
     }
     
 }

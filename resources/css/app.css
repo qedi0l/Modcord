@@ -206,6 +206,9 @@ body{
 .td-none{
     text-decoration: none;
 }
+.td-underline{
+    text-decoration: underline;
+}
 .logo-animate{
 
     animation: animate 2s linear infinite;
@@ -354,4 +357,34 @@ body{
 }
 .bg-21{
     background-color: #2121213b;
+}
+.mt-2r{
+    margin-top: 2rem;
+}
+.font-small{
+    font-size: large;
+}
+.request-aproved{
+    background-color:#00ff371c !important;
+}
+
+.request-pending{
+    background-color:#fbff001c !important;
+}
+
+.request-disaproved{
+    background-color:#ff2f001c !important;
+}
+.request-idle{
+    background-color: #616161 !important;
+}
+.collapse{
+    visibility: visible !important;
+}
+
+.accordion-button:focus{
+    box-shadow: none !important;
+}
+.accordion-button:not(.collapsed){
+    color:white;
 }

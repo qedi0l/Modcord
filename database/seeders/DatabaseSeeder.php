@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\File;
+use App\Models\UserRequest;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,6 +29,8 @@ class DatabaseSeeder extends Seeder
             'created_at' => '2024-03-13 20:00:19',
             'updated_at' => '2024-03-13 20:00:19',
         ]);
+
+        //UserRequest::factory(1)->create();
         
     }
 }
