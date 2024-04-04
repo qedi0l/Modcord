@@ -218,14 +218,6 @@ class SeasonController extends Controller
         return redirect()->route('profile.admin')->with('success','Saved');
     }
 
-    public function homeIndex(): View
-    {
-        $seasons = $this->cacheRemember();
-        
-        return view('main',['seasons' => $seasons]) -> with('success');
-    }
-
-    
  
     public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
     { 
