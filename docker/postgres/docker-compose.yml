@@ -34,7 +34,7 @@ services:
     container_name: redis-stack
     restart: unless-stopped
     environment:
-      - REDIS_PASSWORD=75?4jHur^gn8u4kt^
+      - REDIS_PASSWORD=75?4j**$%&&%$W$T*Hur^gn8u4kt^
       - REDIS_PORT=6379
       - REDIS_DATABASES=1
       - REDIS_USERNAME=default
@@ -43,13 +43,9 @@ services:
     ports:
       - 6379:6379/tcp
       - 8001:8001/tcp
-    #command: --requirepass ""
     volumes:
       - ./data/redis:/data
 
-  #elastic Not implemented yet
-  
- 
 
 
 networks:
