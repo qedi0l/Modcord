@@ -63,7 +63,7 @@ class SeasonController extends Controller
     }
     
     
-    public function seasonIndex() : View
+    public function index() : View
     {   
         
         $seasons = $this->cacheRemember();
@@ -71,12 +71,6 @@ class SeasonController extends Controller
         return view('profile.admin', [
             'seasons' => $seasons,
         ]); 
-    }
-    public function homeIndex(): View
-    {
-        $seasons = $this->rememberCache();
-        
-        return view('main',['seasons' => $seasons]);
     }
 
 
@@ -218,6 +212,14 @@ class SeasonController extends Controller
         return redirect()->route('profile.admin')->with('success','Saved');
     }
 
+    public function homeIndex(): View
+    {
+        $seasons = $this->cacheRemember();
+        
+        return view('main',['seasons' => $seasons]) -> with('success');
+    }
+
+    
  
     public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
     { 
