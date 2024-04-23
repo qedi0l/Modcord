@@ -19,15 +19,13 @@
 <details>
 <summary>Как поднять:</summary>
 
-- Для работы требуются postgres и redis. 
-`docker-compose` в папке docker\postgres
+- Копируем репозиторий в `var/www/app` 
+- `docker-compose up -d --build`
 
 - Делаем миграции `php artisan migrate`
 - Подключаем паблик хранилище файлов `php artisan storage:link`
-- Запускаем сервер `php artisan serve`
-- Запускаем Ноду `npm run dev`
 
-Стандартный url `http://127.0.0.1:8000`
+Стандартный url `http://127.0.0.1`
 </details>
 @Since 2024 for Now.
 
