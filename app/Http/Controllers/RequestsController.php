@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserRequest;
-use App\models\Card;
+use App\Models\Card;
 use App\Traits\CacheMethods;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,7 +33,7 @@ class RequestsController extends Controller
 
         $req = new UserRequest();
         /*
-            It is no need to separate nickname from contacts 
+            It is no need to separate nickname from contacts because of hand work
         */
         $req->contacts = $request->input('nickname')."/".$request->input('contact');
 

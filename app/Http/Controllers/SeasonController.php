@@ -81,7 +81,7 @@ class SeasonController extends Controller
         /*
             announcements are without pack file, but db record is 'anons'
         */
-        if (isset($card->pack))
+        if (!empty($card->pack))
         {
             $this->deleteFile($card->pack);
             $this->deleteFile($card->img);
@@ -89,8 +89,10 @@ class SeasonController extends Controller
        
  
         Card::find($request->id)->delete();
+        if (!empty($card->pack))
         File::query()->select('*')->where('pack',$card->pack)->delete();
         
+        $this->cacheForgetKey('seasons');
         $this->cacheUpdate('seasons',Card::all());
 
         return view('profile.admin');

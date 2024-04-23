@@ -11,6 +11,7 @@ use Illuminate\Cookie\CookieJar;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cookie;
 
 class announcementsController extends Controller
 {
@@ -25,10 +26,12 @@ class announcementsController extends Controller
             It takes remembered IP in cache and compare with cookie
 
             TODO IP remember may not work
+
+            work in progress
         */
 
         $client_ip = $request->getClientIp();
-        $cash_ip = $this->cacheGet('ip'.$client_ip);
+        $cash_ip = $this->cacheGet('ip-'.$client_ip);
         $cookie_ip = $request->cookie('ip');
 
         if((!empty($cash_ip) or !empty($cookie_ip)) and ($cash_ip == $cookie_ip))
@@ -37,6 +40,7 @@ class announcementsController extends Controller
                         ->select('*')
                         ->where('ip_address',$cookie_ip)
                         ->get();
+            cookie();
         }
         else
         {
@@ -44,7 +48,6 @@ class announcementsController extends Controller
                                     ->select('*')
                                     ->where('ip_address',$client_ip)
                                     ->get();
-           
         }
 
         return view('announcements',['seasons' => $announcements, 'requests' => $requests]) -> with('success');
