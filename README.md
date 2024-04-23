@@ -2,7 +2,9 @@
 
 Это мой пет-проект, который я использую для хранения истории сезонов приватного игрового сервера. Онлайн версия тут -> `её тут пока нет`.
 
-Стек: PHP 8.0.0 , Laravel v9.52.16 , PostgresSQL 16.2 + pgAdmin4, Nginx 1.23, Redis image:redis-stack , Docker
+Контейнерезирован, переведен под линукс.
+
+Стек: PHP 8.2.0 fpm, Laravel v9.52.16, PostgresSQL 16.2 + pgAdmin4, Nginx, Redis-stack, NodeJs 
 
 <details>
 <summary>Возможности приложения:</summary>
