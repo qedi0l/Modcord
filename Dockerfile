@@ -47,13 +47,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 # install composer
-COPY --from=composer:2.6.5 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
 # copy composer.json to workdir & install dependencies
 COPY composer.json ./
 RUN composer install
 
-
+RUN npm run build
 # RUN php artisan storage:link
 
 # Set the default command to run php-fpm
