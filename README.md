@@ -18,7 +18,7 @@
 <details>
 <summary>Как поднять:</summary>
 
-- Копируем репозиторий в `var/www/app` 
+- Скачиваем репозиторий 
 - `docker-compose up -d --build`
 
 - Делаем миграции `php artisan migrate`
