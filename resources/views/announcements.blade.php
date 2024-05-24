@@ -40,23 +40,32 @@
                                                         <a href="{{route('requests.delete',$request->id)}}"> Delete</a>
                                                     </button> 
                                                 @endif
-                                                
-                                                
-                                                
                                             </div>
-
-                                            
                                         </h1>
-                                        
                                     </div>
                                 </div>
                                 <div class="text">
 
                                 </div>
                             </div>
-                            
-                            
                         </section>
+                        @if ($request->state != "idle")
+                            <div class="accordion sm:rounded-lg " id="accordionExample">
+                                <div class="accordion-item b-t bg-transparent bg-dark sm:rounded-lg color-white">
+                                    <h2 class="accordion-header sm:rounded-lg bg-transparent bg-dark">
+                                        <button class="accordion-button collapsed bg-transparent bg-dark color-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo-{{$request->id}}" aria-expanded="false" aria-controls="collapseTwo-{{$request->id}}">
+                                            Request response
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo-{{$request->id}}" class="accordion-collapse bg-transparent sm:rounded-lg  collapse bg-dark" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body sm:rounded-lg bg-transparent bg-dark">
+                                            {{$request->response}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        @endif
                     @endforeach
                 </div>
 
@@ -66,9 +75,10 @@
                     </h1>
                 @endif
                 
+                
                 @include('components.request-form')
 
-                <div class="flex z-2 justify-center mt-4 sm:items-center sm:justify-between">
+                <div class="flex z-2 align-items-baseline justify-center mt-4 sm:items-center sm:justify-between">
                     <div class="text-center z-2 text-sm text-gray-500 sm:text-left">
                         <div class="flex z-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-mt-px w-5 h-5 text-gray-400">
