@@ -221,8 +221,6 @@ class SeasonController extends Controller
         return view('main',['seasons' => $seasons]) -> with('success');
     }
 
-    
- 
     public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
     { 
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {

@@ -62,16 +62,26 @@ class RequestsController extends Controller
         elseif($radio == "aproved") $req->state = "aproved";
 
         $req->response = $request->response;
-        //dd($request);
         $req->save();
+
+        $user_requests = UserRequest::query()->select('*')->orderBy('state')->get();
+        $this->cacheUpdate("user_requests",$user_requests);
 
         return redirect() -> route('profile.requests') -> with('success');
     }
    
     public function show() : View
-    {
+    {   
+        //caching 
+        if ($user_requests = $this->cacheGet("user_requests"));
+        else
+        {
+            $user_requests = UserRequest::query()->select('*')->orderBy('state')->get();
+            $this->cacheSet("user_requests", $user_requests);
+        }
+
         return view('profile.requests', [
-            'user_requests' => UserRequest::query()->select('*')->orderBy('state')->get(),
+            'user_requests' => $user_requests
         ]);
     }
     

@@ -20,7 +20,7 @@
 
                 @include('components.cards')
 
-                <div class="flex z-2 justify-center mt-4 sm:items-center sm:justify-between">
+                <div class="flex z-2 align-items: baseline  justify-center mt-4 sm:items-center sm:justify-between">
                     <div class="text-center z-2 text-sm text-gray-500 sm:text-left">
                         <div class="flex z-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="-mt-px w-5 h-5 text-gray-400">
