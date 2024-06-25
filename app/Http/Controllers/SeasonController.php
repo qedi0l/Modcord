@@ -21,13 +21,9 @@ class SeasonController extends Controller
 
     private function storeFile($file,$folder = null)
     {
-
         $path = $this->UploadFile($file, 'Albumes');
-        
-        File::create([
-            'path' => $path
-        ]);
-        
+        File::create(['path' => $path]);
+
         return $path;
     }
 
@@ -36,11 +32,11 @@ class SeasonController extends Controller
         $card = new Card();
         $card->season = $request->input('season');
         $card->version = $request->input('version');
+
         $file = $request->file('file');
-
         $card->img = $this->storeFile($file); 
-
         $file = $request->file('pack');
+        
         // beacuse announcements are without files
         if ($file){ 
             $pack = $this->storeFile($file);
@@ -48,33 +44,28 @@ class SeasonController extends Controller
         }else{
             $card->pack = "anons";
         }
-
-        /*
-            TODO make formatting saving
-            TODO implement side text editor
-        */
-        $card->description = mb_convert_encoding(trim($request->input('description')), 'UTF-8');
         
+        $card->description = mb_convert_encoding(trim($request->input('description')), 'UTF-8');
+       
         $card->save();
 
         $this->cacheUpdate('seasons',Card::all());
 
-        return redirect('profile/admin');
+        return back()->with('success');
     }
     
     
     public function index() : View
     {   
-        
         $seasons = $this->cacheRemember();
-        
+
         return view('profile.admin', [
             'seasons' => $seasons,
         ]); 
     }
 
 
-    public function delete(Request $request) : View
+    public function delete(Request $request) : RedirectResponse
     {
 
         $card = Card::find($request->id);
@@ -89,19 +80,19 @@ class SeasonController extends Controller
        
  
         Card::find($request->id)->delete();
+
         if (!empty($card->pack))
         File::query()->select('*')->where('pack',$card->pack)->delete();
         
         $this->cacheForgetKey('seasons');
         $this->cacheUpdate('seasons',Card::all());
 
-        return view('profile.admin');
+        return back();
     }
     
     public function download(Request $request) 
     {
         $card = Card::find($request->id);
-
         $pack = $this->cacheRemember('pack:'.$request->id,$card->pack);
 
         return url('storage/'.$pack);
@@ -111,22 +102,18 @@ class SeasonController extends Controller
     {
         $card = Card::find($request->id);
 
-        $season = $request->input('new_season');
-        if($season) $card->season = $season;
+        if($season = $request->input('new_season'))
+        $card->season = $season;
         
-        $version = $request->input('new_version');
-        if($version) $card->version = $version;
+        if($version = $request->input('new_version'))
+        $card->version = $version;
 
-        $pack = $request->file('new_pack');
-        if($pack) $card->pack = $this->storeFile($pack);
+        if($pack = $request->file('new_pack'))
+        $card->pack = $this->storeFile($pack);
 
-        $file = $request->file('new_file');
-        if($file) $card->img = $this->storeFile($file); 
+        if($file = $request->file('new_file'))
+        $card->img = $this->storeFile($file); 
 
-        /*
-            TODO make formatting saving
-            TODO implement side text editor
-        */
         $description = mb_convert_encoding(trim($request->input('new_description')), 'UTF-8');
         if($description) $card->description = $description;
 
@@ -134,23 +121,16 @@ class SeasonController extends Controller
 
         $this->cacheUpdate('seasons',Card::all());
 
-        return redirect()->route('profile.admin')->with('success','Saved');
+        return back()->with('success','Saved');
     }
     public function moveUp(Request $request) : RedirectResponse
     { 
-
-        /* 
-            This moves season cards, moving their ids
-
-            TODO: Code smells
-
-        */
 
         $card_this = Card::find($request->id);
         $id_this = $card_this->id;
         $min_id = Card::query()->min('id');
 
-        if($id_this!=$min_id){
+        if($id_this != $min_id){
             
             $card_prev = Card::find($request->id - 1);
             $id_prev = Card::find($id_this - 1)->id;
@@ -166,30 +146,20 @@ class SeasonController extends Controller
             $card_prev->save();
         }
 
-        $seasons = Card::query()
-                        ->select('*')
-                        ->orderBy('id','asc')
-                        ->get();
+        $seasons = Card::getAllCardsOrdered();
 
         $this->cacheUpdate('seasons',$seasons);
        
-        return redirect()->route('profile.admin')->with('success','Saved');
+        return back();
     }
     public function moveDown(Request $request) : RedirectResponse
     { 
-
-        /* 
-            This moves season cards, moving their ids
-
-            TODO: Code smells
-
-        */
 
         $card_this = Card::find($request->id);
         $id_this = $card_this->id;
         $max_id = Card::query()->max('id');
         
-        if($id_this<$max_id){
+        if($id_this < $max_id){
             $card_next = Card::find($request->id+1);
             $id_next = Card::find($id_this + 1)->id;
             $temp_id = 0;
@@ -204,33 +174,25 @@ class SeasonController extends Controller
             $card_next->save();
         }
 
-        $seasons = Card::query()
-                        ->select('*')
-                        ->orderBy('id','asc')
-                        ->get();
+        $seasons = Card::getAllCardsOrdered();
 
         $this->cacheUpdate('seasons', $seasons);
 
-        return redirect()->route('profile.admin')->with('success','Saved');
+        return back();
     }
 
     public function homeIndex(): View
     {
         $seasons = $this->cacheRemember();
-        
         return view('main',['seasons' => $seasons]) -> with('success');
     }
 
-    
- 
+
     public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
     { 
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
-            else return Card::query()
-                            ->select('*')
-                            ->orderBy('id','asc')
-                            ->get();
+            else return Card::getAllCardsOrdered();
         });
         return json_decode($data);
     }

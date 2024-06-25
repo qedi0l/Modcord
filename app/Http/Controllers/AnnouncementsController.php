@@ -20,34 +20,18 @@ class announcementsController extends Controller
     {
         $announcements = $this->cacheRemember('announcements');
 
-        /*
-            Because of requests are without register
-            Store of requests are by IP
-            It takes remembered IP in cache and compare with cookie
-
-            TODO IP remember may not work
-
-            work in progress
-        */
-
         $client_ip = $request->getClientIp();
         $cash_ip = $this->cacheGet('ip-'.$client_ip);
         $cookie_ip = $request->cookie('ip');
 
         if((!empty($cash_ip) or !empty($cookie_ip)) and ($cash_ip == $cookie_ip))
         {
-            $requests = UserRequest::query()
-                        ->select('*')
-                        ->where('ip_address',$cookie_ip)
-                        ->get();
+            $requests = UserRequest::where('ip_address',$cookie_ip)->get();
             cookie();
         }
         else
         {
-            $requests = UserRequest::query()
-                                    ->select('*')
-                                    ->where('ip_address',$client_ip)
-                                    ->get();
+            $requests = UserRequest::where('ip_address',$client_ip)->get();
         }
 
         return view('announcements',['seasons' => $announcements, 'requests' => $requests]) -> with('success');
@@ -82,9 +66,7 @@ class announcementsController extends Controller
     {
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
-            else return Card::query()
-                            ->select('*')
-                            ->where('pack','anons')
+            else return Card::where('pack','anons')
                             ->orderBy('id','asc')
                             ->get();
         });

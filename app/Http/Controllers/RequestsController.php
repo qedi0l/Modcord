@@ -26,22 +26,15 @@ class RequestsController extends Controller
         $client_ip = $request->getClientIp();
 
         $req_max_count = Card::query()->where('pack','anons')->count();
-
         if (UserRequest::query()->where('ip_address',$client_ip)->count('ip_address') >= $req_max_count){
-            return redirect() -> route('announcements.index') -> with('status','More requests than allowed');
+            return back() -> with('status','More requests than allowed');
         }
 
         $req = new UserRequest();
-        /*
-            It is no need to separate nickname from contacts because of hand work
-        */
         $req->contacts = $request->input('nickname')."/".$request->input('contact');
-
         $req->ip_address = $request->getClientIp();
-        
         $req->season = Card::find($request->input('season-sel'))->season;
         $req->text = mb_convert_encoding(trim($request->input('textRequest')), 'UTF-8');
-        
         $req->save();
 
         
@@ -49,7 +42,7 @@ class RequestsController extends Controller
         
         //$this->updateCache('UserRequest/'.$client_ip,UserRequest::find($client_ip));
 
-        return redirect() -> route('announcements.index') -> cookie($cookie) -> with('success');
+        return back() -> cookie($cookie) -> with('success');
     }
     
     public function update(Request $request) : RedirectResponse
@@ -62,16 +55,16 @@ class RequestsController extends Controller
         elseif($radio == "aproved") $req->state = "aproved";
 
         $req->response = $request->response;
-        //dd($request);
         $req->save();
 
         return redirect() -> route('profile.requests') -> with('success');
     }
    
     public function show() : View
-    {
+    {   
+        $requests = UserRequest::getAllRequests();
         return view('profile.requests', [
-            'user_requests' => UserRequest::query()->select('*')->orderBy('state')->get(),
+            'user_requests' => $requests,
         ]);
     }
     
@@ -86,19 +79,16 @@ class RequestsController extends Controller
         if ($client_ip == UserRequest::find($request->UUID)->ip_address){
             UserRequest::find($request->UUID)->delete();
         }
-        else return redirect() -> route('announcements.index') -> with('status','Unpriveleged acess');
+        else return back() -> route('announcements.index') -> with('status','Unpriveleged acess');
         
-        return redirect() -> route('announcements.index') -> with('success');
+        return back() -> with('success');
     }
 
     public function cacheRemember(string $key = 'requests', mixed $value = null, int $ttl = 3600): mixed 
     {
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
-            else return UserRequest::query()
-                            ->select('*')
-                            ->orderBy('id','asc')
-                            ->get();
+            else return UserRequest::getAllRequests();
         });
         return json_decode($data);
     }

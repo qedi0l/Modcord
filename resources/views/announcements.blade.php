@@ -21,7 +21,6 @@
 
                 <div class="mt-3">
                     @foreach ($requests as $request)
-                    <!-- include('components.page-label', array($lable = $request)) -->
                         <section class=" mt-3">
                             <div class="flex column status-idle">
                                 <div class="title">

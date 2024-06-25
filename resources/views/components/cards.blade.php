@@ -1,6 +1,7 @@
 
 @isset($seasons)
     @foreach ($seasons as $card)
+
         <div class="mt-10">
             <div class="card-wrapper">
                 <div class="card-description leading-relaxed text-zinc-700 dark:text-zinc-200">
