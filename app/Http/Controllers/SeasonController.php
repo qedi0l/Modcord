@@ -125,15 +125,14 @@ class SeasonController extends Controller
     }
     public function moveUp(Request $request) : RedirectResponse
     { 
-
-        $card_this = Card::find($request->id);
+        $card_this = Card::find($request->input("cardID"));
         $id_this = $card_this->id;
         $min_id = Card::query()->min('id');
 
         if($id_this != $min_id){
-            
-            $card_prev = Card::find($request->id - 1);
-            $id_prev = Card::find($id_this - 1)->id;
+
+            $card_prev = Card::find($id_this - 1);
+            $id_prev = $card_prev->id;
             $temp_id = 0;
 
             $card_prev->id = $temp_id;
@@ -145,23 +144,22 @@ class SeasonController extends Controller
             $card_prev->id = $id_this;
             $card_prev->save();
         }
+        else return back()->with("status","Fail");
 
-        $seasons = Card::getAllCardsOrdered();
-
-        $this->cacheUpdate('seasons',$seasons);
+        $this->cacheUpdate('seasons',Card::getAllCardsOrdered());
        
-        return back();
+        return back()->with("status","Saved");
     }
     public function moveDown(Request $request) : RedirectResponse
     { 
-
-        $card_this = Card::find($request->id);
+        $card_this = Card::find($request->input("cardID"));
         $id_this = $card_this->id;
         $max_id = Card::query()->max('id');
         
         if($id_this < $max_id){
-            $card_next = Card::find($request->id+1);
-            $id_next = Card::find($id_this + 1)->id;
+            
+            $card_next = Card::find($id_this+1);
+            $id_next = $id_this + 1;
             $temp_id = 0;
 
             $card_next->id = $temp_id;
@@ -173,12 +171,11 @@ class SeasonController extends Controller
             $card_next->id = $id_this;
             $card_next->save();
         }
+        else return back()->with("status","Fail");
 
-        $seasons = Card::getAllCardsOrdered();
+        $this->cacheUpdate('seasons',Card::getAllCardsOrdered());
 
-        $this->cacheUpdate('seasons', $seasons);
-
-        return back();
+        return back()->with("status","Saved");
     }
 
     public function homeIndex(): View

@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', [SeasonController::class, 'homeIndex'])->name('/');
@@ -26,26 +21,34 @@ Route::middleware('downloadLimiter')->group(function ()
 
 Route::get('/announcements', [AnnouncementsController::class, 'index'])->name('announcements.index');
 
+// Requests
 Route::get('/request/{UUID}', [RequestsController::class, 'index'])->name('requests');
 Route::post('/request/new', [RequestsController::class, 'create'])->name('requests.create');
 Route::get('/request/delete/{UUID}', [RequestsController::class, 'delete'])->name('requests.delete');
 
+// Auth required
 Route::middleware('auth')->group(function () 
 {
+    // Accaunt
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Card actions
     Route::post('/profile/admin/new', [SeasonController::class, 'create'])->name('profile.admin.new');
-    Route::get('/profile/admin/delete', [SeasonController::class, 'delete'])->name('season.delete');
+    Route::post('/profile/admin/delete', [SeasonController::class, 'delete'])->name('season.delete');
     Route::post('/profile/admin/update', [SeasonController::class, 'update'])->name('profile.admin.update');
+    
+    Route::post('/profile/admin/up', [SeasonController::class, 'moveUp'])->name('profile.admin.up');
+    Route::post('/profile/admin/down', [SeasonController::class, 'moveDown'])->name('profile.admin.down');
 
+    // Admin panel
     Route::get('/profile/admin', [SeasonController::class, 'index'])->name('profile.admin');
-    Route::get('/profile/admin/up', [SeasonController::class, 'MoveUp'])->name('profile.admin.up');
-    Route::get('/profile/admin/down', [SeasonController::class, 'MoveDown'])->name('profile.admin.down');
-
+    
+    // Requests panel
     Route::get('/profile/requests', [RequestsController::class, 'show'])->name('profile.requests');
     Route::post('/profile/requests/update', [RequestsController::class, 'update'])->name('profile.requests.update');
+
 });
 
 require __DIR__.'/auth.php';

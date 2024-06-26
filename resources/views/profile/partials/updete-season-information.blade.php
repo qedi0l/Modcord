@@ -29,15 +29,6 @@
                         <a href="{{route('season.delete', ['id' => $card->id])}}">{{ __('Delete card') }}</a>
                     </x-primary-button> 
 
-                    @if (session('status') === 'season-updated')
-                        <p
-                            x-data="{ show: true }"
-                            x-show="show"
-                            x-transition
-                            x-init="setTimeout(() => show = false, 2000)"
-                            class="text-sm text-gray-600 dark:text-gray-400"
-                        >{{ __('Saved.') }}</p>
-                    @endif
                 </div>
             </div>
         </div>
@@ -45,10 +36,43 @@
     
     <div class="move-card">
         <div class="text-end items-center gap-4">
-            <a type="button" href="{{ route('profile.admin.up', ['id' => $card->id]) }}"><button type="button" class="btn btn-primary">Up</button></a>
+            <button type="button" onclick="moveSeasonUp({{$card->id}},'{{ csrf_token()}}')" class="btn btn-primary">Up</button>
         </div>
         <div class="text-end items-center gap-4">
-            <a type="button" href="{{ route('profile.admin.down', ['id' => $card->id]) }}"><button type="button" class="btn btn-primary">Down</button></a>
+            <button type="button" onclick="moveSeasonDown({{$card->id}},'{{ csrf_token()}}')" class="btn btn-primary">Down</button>
         </div>
+
+
+        <script>
+            function moveSeasonUp(cardID,token){
+                $.ajax({
+                    url: "{{route('profile.admin.up')}}", 
+                    type: 'POST',
+                    data: {
+                        "_token": token,
+                        cardID:cardID,
+                    },
+                    success: function (response) {
+                        $('body').html(response);
+                    }
+                });
+            };
+
+            function moveSeasonDown(cardID,token){
+                $.ajax({
+                    url: "{{route('profile.admin.down')}}", 
+                    type: 'POST',
+                    data: {
+                        "_token": token,
+                        cardID:cardID,
+                    },
+                    success: function (response) {
+                        $('body').html(response);
+                    }
+                });
+            };
+        </script>
+
+        
     </div>
 </section>

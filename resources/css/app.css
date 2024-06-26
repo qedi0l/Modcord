@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 body{
-    background-color: #18181b;
+    background-color: #18181b !important;
 }
-
 .side-panel{
     z-index: 1;
     top: -1px;

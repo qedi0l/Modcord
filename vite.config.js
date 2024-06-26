@@ -12,7 +12,7 @@ export default defineConfig({
         }),
     ],
     server: { 
-        https:false,
+        https: false,
         host: true,
         port: 5173,
         hmr: {host: '127.0.0.1', protocol: 'ws',},
