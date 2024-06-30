@@ -68,11 +68,6 @@ class RequestsController extends Controller
         ]);
     }
     
-    public function edit()
-    {
-        //
-    }
-
     public function delete(Request $request) : RedirectResponse
     {
         $client_ip = $request->getClientIp();
@@ -84,7 +79,7 @@ class RequestsController extends Controller
         return back() -> with('success');
     }
 
-    public function cacheRemember(string $key = 'requests', mixed $value = null, int $ttl = 3600): mixed 
+    private function cacheRemember(string $key = 'requests', mixed $value = null, int $ttl = 3600): mixed 
     {
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);

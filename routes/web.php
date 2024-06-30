@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [SeasonController::class, 'homeIndex'])->name('/');
+Route::get('/', [SeasonController::class, 'homeShow'])->name('/');
 
 Route::middleware('downloadLimiter')->group(function () 
 {
@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function ()
     Route::post('/profile/admin/down', [SeasonController::class, 'moveDown'])->name('profile.admin.down');
 
     // Admin panel
-    Route::get('/profile/admin', [SeasonController::class, 'index'])->name('profile.admin');
+    Route::get('/profile/admin', [SeasonController::class, 'adminShow'])->name('profile.admin');
     
     // Requests panel
     Route::get('/profile/requests', [RequestsController::class, 'show'])->name('profile.requests');

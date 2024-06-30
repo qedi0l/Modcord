@@ -62,7 +62,7 @@ class announcementsController extends Controller
         //
     }
 
-    public function cacheRemember(string $key, mixed $value = null, int $ttl = 3600): mixed 
+    private function cacheRemember(string $key, mixed $value = null, int $ttl = 3600): mixed 
     {
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);

@@ -19,14 +19,6 @@ class SeasonController extends Controller
 {
     use Upload, CacheMethods;
 
-    private function storeFile($file,$folder = null)
-    {
-        $path = $this->UploadFile($file, 'Albumes');
-        File::create(['path' => $path]);
-
-        return $path;
-    }
-
     public function create(Request $request) : RedirectResponse 
     {
         $card = new Card();
@@ -53,17 +45,6 @@ class SeasonController extends Controller
 
         return back()->with('success');
     }
-    
-    
-    public function index() : View
-    {   
-        $seasons = $this->cacheRemember();
-
-        return view('profile.admin', [
-            'seasons' => $seasons,
-        ]); 
-    }
-
 
     public function delete(Request $request) : RedirectResponse
     {
@@ -178,14 +159,29 @@ class SeasonController extends Controller
         return back()->with("status","Saved");
     }
 
-    public function homeIndex(): View
+    public function adminShow() : View
+    {   
+        $seasons = $this->cacheRemember('seasons');
+        return view('profile.admin', ['seasons' => $seasons,]); 
+    }
+
+    public function homeShow(): View
     {
-        $seasons = $this->cacheRemember();
-        return view('main',['seasons' => $seasons]) -> with('success');
+        $seasons = $this->cacheRemember('seasons');
+        return view('main',['seasons' => $seasons]);
     }
 
 
-    public function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
+    private function storeFile($file,$folder = null)
+    {
+        $path = $this->UploadFile($file, 'Albumes');
+        File::create(['path' => $path]);
+
+        return $path;
+    }
+
+
+    private function cacheRemember($key = 'seasons', $value = null, int $ttl = 3600): mixed
     { 
         $data = Cache::remember($key, Carbon::now()->addMinutes(5), function () use ($value) {
             if (isset($value)) return json_encode($value);
