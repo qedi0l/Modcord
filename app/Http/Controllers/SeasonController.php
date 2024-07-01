@@ -96,7 +96,7 @@ class SeasonController extends Controller
         if($file = $request->file('newImg'))
         $card->img = $this->storeFile($file); 
 
-        $description = mb_convert_encoding(trim($request->input('new_description')), 'UTF-8');
+        $description = mb_convert_encoding(trim($request->input('newDescription')), 'UTF-8');
         if($description) $card->description = $description;
 
         $card->save();

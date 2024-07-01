@@ -29,44 +29,44 @@
                                     </div>
                                 </div>
                             </form>
-                        @endforeach
-                        <script>
+                            <script>
 
-                            // update card
-                            $(document).ready(function() {
-                                $('#CardForm-{{$card->id}}').on('submit', function(e) {
-                                    e.preventDefault(); 
-
-                                    let newSeason = $('#new_season-{{$card->id}}').val();
-                                    let newVersion = $('#new_version-{{$card->id}}').val();
-                                    let newDescription = $('#new_description-{{$card->id}}').val();
-                                    let newImg = $('#new_img-{{$card->id}}')[0].files[0];
-                                    let newPack = $('#new_pack-{{$card->id}}')[0].files[0];
-
-                                    formData = new FormData();
-                                    formData.append('_token','{{ csrf_token()}}');
-                                    formData.append('newSeason',newSeason);
-                                    formData.append('newVersion',newVersion);
-                                    formData.append('newDescription',newDescription);
-                                    formData.append('newImg',newImg);
-                                    formData.append('newPack',newPack);
-                                    formData.append('cardID',"{{$card->id}}");
-
-                                    $.ajax({
-                                        url: "{{route('profile.admin.update')}}", 
-                                        type: 'POST',
-                                        data: formData,
-                                        enctype: "multipart/form-data",
-                                        contentType: false,
-                                        processData: false,
-                                        dataType:"html",
-                                        success: function (response) {
-                                            $('body').html(response);
-                                        },
+                                // update card
+                                $(document).ready(function() {
+                                    $('#CardForm-{{$card->id}}').on('submit', function(e) {
+                                        e.preventDefault(); 
+    
+                                        let newSeason = $('#new_season-{{$card->id}}').val();
+                                        let newVersion = $('#new_version-{{$card->id}}').val();
+                                        let newDescription = $('#new_description-{{$card->id}}').val();
+                                        let newImg = $('#new_img-{{$card->id}}')[0].files[0];
+                                        let newPack = $('#new_pack-{{$card->id}}')[0].files[0];
+    
+                                        formData = new FormData();
+                                        formData.append('_token','{{ csrf_token()}}');
+                                        formData.append('newSeason',newSeason);
+                                        formData.append('newVersion',newVersion);
+                                        formData.append('newDescription',newDescription);
+                                        formData.append('newImg',newImg);
+                                        formData.append('newPack',newPack);
+                                        formData.append('cardID',"{{$card->id}}");
+    
+                                        $.ajax({
+                                            url: "{{route('profile.admin.update')}}", 
+                                            type: 'POST',
+                                            data: formData,
+                                            enctype: "multipart/form-data",
+                                            contentType: false,
+                                            processData: false,
+                                            dataType:"html",
+                                            success: function (response) {
+                                                $('body').html(response);
+                                            },
+                                        });
                                     });
                                 });
-                            });
-                        </script>
+                            </script>
+                        @endforeach
 
                         <script>
                             function moveSeasonUp(cardID,token){
