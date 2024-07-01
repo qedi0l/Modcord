@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [SeasonController::class, 'homeShow'])->name('/');
+Route::get('/test', [SeasonController::class, 'Test']);
 
 Route::middleware('downloadLimiter')->group(function () 
 {
@@ -36,7 +37,7 @@ Route::middleware('auth')->group(function ()
 
     // Card actions
     Route::post('/profile/admin/new', [SeasonController::class, 'create'])->name('profile.admin.new');
-    Route::post('/profile/admin/delete', [SeasonController::class, 'delete'])->name('season.delete');
+    Route::post('/profile/admin/delete', [SeasonController::class, 'delete'])->name('profile.admin.delete');
     Route::post('/profile/admin/update', [SeasonController::class, 'update'])->name('profile.admin.update');
     
     Route::post('/profile/admin/up', [SeasonController::class, 'moveUp'])->name('profile.admin.up');

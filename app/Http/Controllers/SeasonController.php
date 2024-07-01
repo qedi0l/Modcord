@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Support\Facades\Storage;
 
 class SeasonController extends Controller 
 {
@@ -48,27 +49,27 @@ class SeasonController extends Controller
 
     public function delete(Request $request) : RedirectResponse
     {
-
-        $card = Card::find($request->id);
+        $cardID = $request->input("cardID");
+        $card = Card::find($cardID);
         /*
             announcements are without pack file, but db record is 'anons'
         */
-        if (!empty($card->pack))
+        if ($card->pack != "anons")
         {
+            //delete files from disk
             $this->deleteFile($card->pack);
             $this->deleteFile($card->img);
+            //delete files records
+            File::query()->select('*')->where('pack',$card->pack)->delete();
         }
-       
- 
-        Card::find($request->id)->delete();
 
-        if (!empty($card->pack))
-        File::query()->select('*')->where('pack',$card->pack)->delete();
-        
+        $card->delete();
+
+        //Cache update
         $this->cacheForgetKey('seasons');
-        $this->cacheUpdate('seasons',Card::all());
+        $this->cacheUpdate('seasons',Card::getAllCardsOrdered());
 
-        return back();
+        return back()->with('success');
     }
     
     public function download(Request $request) 
@@ -81,18 +82,18 @@ class SeasonController extends Controller
 
     public function update(Request $request) : RedirectResponse 
     {
-        $card = Card::find($request->id);
+        $card = Card::find($request->input('cardID'));
 
-        if($season = $request->input('new_season'))
+        if($season = $request->input('newSeason'))
         $card->season = $season;
         
-        if($version = $request->input('new_version'))
+        if($version = $request->input('newVersion'))
         $card->version = $version;
 
-        if($pack = $request->file('new_pack'))
+        if($pack = $request->file('newPack'))
         $card->pack = $this->storeFile($pack);
 
-        if($file = $request->file('new_file'))
+        if($file = $request->file('newImg'))
         $card->img = $this->storeFile($file); 
 
         $description = mb_convert_encoding(trim($request->input('new_description')), 'UTF-8');
@@ -100,7 +101,7 @@ class SeasonController extends Controller
 
         $card->save();
 
-        $this->cacheUpdate('seasons',Card::all());
+        $this->cacheUpdate('seasons',Card::getAllCardsOrdered());
 
         return back()->with('success','Saved');
     }
@@ -169,6 +170,12 @@ class SeasonController extends Controller
     {
         $seasons = $this->cacheRemember('seasons');
         return view('main',['seasons' => $seasons]);
+    }
+
+    public function Test() {
+        $store = Storage::disk('s3')->put('/test.txt','Hello World!');
+        $exists = Storage::disk('s3')->exists('/test.txt');
+        return dd($exists);
     }
 
 
