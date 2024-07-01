@@ -24,9 +24,9 @@ trait CacheMethods
 
     abstract public function cacheRemember(string $key, mixed $value = null, int $ttl = 3600): mixed;
 
-    public function cacheSet($key, $value,$ttl=3600): void
+    public function cacheSet($key, $value, $ttl=3600): void
     {
-        Cache::set($key,json_encode($value));
+        Cache::set($key,json_encode($value),$ttl);
     }
     public function cacheSetForever($key, $value): void
     {

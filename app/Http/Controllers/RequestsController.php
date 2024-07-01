@@ -57,6 +57,9 @@ class RequestsController extends Controller
         $req->response = $request->response;
         $req->save();
 
+        $user_requests = UserRequest::query()->select('*')->orderBy('state')->get();
+        $this->cacheUpdate("user_requests",$user_requests);
+
         return redirect() -> route('profile.requests') -> with('success');
     }
    

@@ -172,13 +172,6 @@ class SeasonController extends Controller
         return view('main',['seasons' => $seasons]);
     }
 
-    public function Test() {
-        $store = Storage::disk('s3')->put('/test.txt','Hello World!');
-        $exists = Storage::disk('s3')->exists('/test.txt');
-        return dd($exists);
-    }
-
-
     private function storeFile($file,$folder = null)
     {
         $path = $this->UploadFile($file, 'Albumes');
